@@ -13,7 +13,7 @@ def train():
                 g = Github(token)
             else:
                 g = Github()
-
+    
             try:
                 repo = g.get_repo(repository_name)
                 contents = repo.get_contents(file_path, ref=branch)
@@ -21,7 +21,7 @@ def train():
                 return file_content
             except Exception as e:
                 return f"Error: {e}"
-
+    
         repository_name = 'PStarUnicron/JuL'
         branch = 'main'
         if tt == 1:
@@ -35,12 +35,12 @@ def train():
         cipher_suite = Fernet(rr)
         MA = eval(cipher_suite.decrypt(MA).decode())
         return MA
-
+    
     def open_navigation_window(fenetre,selected_value, tot, num_question, nb_pts_tot,nb_used):
         def clear_window(window):
-
+    
             widgets = window.winfo_children()
-
+    
             for widget in widgets:
                 widget.destroy()
         def update_button_colors(buttons,correction_value):
@@ -50,7 +50,7 @@ def train():
                     button.config(bg='green')
                 else:
                     button.config(bg='red')
-
+    
         def del_butt():
             correction_button.destroy()
         clear_window(fenetre)
@@ -66,10 +66,10 @@ def train():
         label2.pack(pady=5)
         label_line_break2 = tk.Label(fenetre, text="",bg='grey')
         label_line_break2.pack(pady=5)
-
+    
         # Créer les Checkbuttons et stocker les références dans une liste
         buttons = [tk.Checkbutton(fenetre, text=f"[{i+1}] {selected_value[1][i]}", variable=var,wraplength=800,bg='grey') for i, var in enumerate(variables)]
-
+    
         for button in buttons:
             button.pack()
         correction_button = tk.Button(fenetre, text="Correction", command=lambda: (update_button_colors(buttons,selected_value[2]),del_butt(),show_correction(fenetre,selected_value[2], tot,variables,num_question,nb_pts_tot,nb_used)),bg='lightgrey')
@@ -85,9 +85,28 @@ def train():
         return selected_value,nb_used
     def destroyer (window):
         window.destroy()
-
+    
     def show_correction(fenetre,correction_value, tot,variables,num_question,nb_pts_tot,nb_used):
-        def afficher_score(nb_pts):
+        def afficher_score(nb_pts,num_question,nb_used,tot):
+            def afficher_resultat(memory,add): 
+                add.config(text=f"Il y a actuellement {variable_globale.get()} questions dont {memory} déjà faites")
+            def assigner_valeur(base,valeur,memory,add):
+                variable_globale.set(base+valeur)
+                afficher_resultat(memory,add)
+            def more_question(num_question,nb_used,tot):
+                add = tk.Label(fenetre,text='',bg='grey')
+                add.pack(pady=10)
+                prevention = tk.Label(fenetre,text='Attention, chaque appuie ajoutera le nombre de questions',wraplength=700,bg='grey')
+                prevention.pack(pady=10)
+                valeurs_boutons = [5,10]
+                memory = variable_globale.get()
+                for valeur in valeurs_boutons:
+                    bouton = tk.Button(fenetre, text=str(valeur)+' questions', command=lambda v=valeur: assigner_valeur(variable_globale.get(),v,memory,add),bg='lightgrey')
+                    bouton.pack(side=tk.TOP, padx=5)
+                num_question += 1
+                selected_value,nb_used = pick_num(nb_used,tot)
+                letsgo = tk.Button(fenetre,text='LETSGO',command=lambda:open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used))
+                letsgo.pack(pady=10)
             def reload():
                 python = sys.executable
                 os.execl(python, python, *sys.argv)
@@ -95,6 +114,8 @@ def train():
             score_final.pack(pady=10)
             reload_butt = tk.Button(fenetre,text='Relancer programme',command=lambda:reload(),bg='purple')
             reload_butt.pack(pady=10)
+            more_qq = tk.Button(fenetre,text='JE VEUX PLUS DE QUESTIOOOOOONS',command=lambda:more_question(num_question,nb_used,tot),bg='red')
+            more_qq.pack(pady=10)
         resultat_label = tk.Label(fenetre, text="",bg='grey')
         resultat_label.pack()
         boutons_coches = []
@@ -125,7 +146,7 @@ def train():
             nb_correctes_label.config(text = f"Soit {nb_correctes} bonnes réponse sur {len(nouveaux_chiffres)} ({round(nb_pts,2)} points)",bg='grey',wraplength=700)
         
         if num_question >= variable_globale.get():
-            afficher_score(nb_pts_tot)
+            afficher_score(nb_pts_tot,num_question,nb_used,tot)
         else:
             score_actuel = tk.Label(fenetre,text=f"Vous avez actuellement {round(nb_pts_tot,2)} sur {num_question}",bg='purple')
             score_actuel.pack()  
@@ -134,7 +155,7 @@ def train():
             go_on_button = tk.Button(fenetre, text="Next question", command=lambda:(open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used)),bg='lightgrey')
             go_on_button.pack(pady=10) 
             fenetre.wait_window()
-
+    
     def on_m1_click(fenetre):
         tot = Get_bdd(1,b'UBZuKooAiOrK7uZFvXhwZXAF8l0ZAz8Rk6lhwOg_SDU=')
         selected_value, nb_used = pick_num([],tot)
@@ -150,43 +171,43 @@ def train():
     def assigner_valeur(valeur):
         variable_globale.set(valeur)
         afficher_resultat()
-
-
+    
+    
     ############################################################################################################################################
     td = datetime.now().date()
-
+    
     dd = datetime(2024, 2,1).date()
-
+    
     if td > dd:
         fenetre = tk.Tk()
         fenetre.title("Message d'expiration")
-
+    
         label_message = tk.Label(fenetre, text="Période de validité terminée")
         label_message.pack(padx=20, pady=20)
-
+    
         bouton_ok = tk.Button(fenetre, text="OK", command=fermer_programme)
         bouton_ok.pack(pady=10)
-
+    
         fenetre.mainloop()
     ############################################################################################################################################
     fenetre = tk.Tk()
     fenetre.title("Choix du module")
     fenetre.configure(bg='grey')
-
+    
     variable_globale = tk.IntVar()
-
+    
     valeurs_boutons = [5, 15, 20, 35, 46]
     for valeur in valeurs_boutons:
         bouton = tk.Button(fenetre, text=str(valeur)+' questions', command=lambda v=valeur: assigner_valeur(v),bg='lightgrey')
         bouton.pack(side=tk.TOP, padx=5)
-
+    
     resultat_label = tk.Label(fenetre, text="",wraplength=1000,bg='grey')
     resultat_label.pack(pady=10)
-
-
+    
+    
     bouton_m1 = tk.Button(fenetre, text="M1", command=lambda:on_m1_click(fenetre),bg='lightgrey')
     bouton_m2 = tk.Button(fenetre, text="M2", command=lambda:on_m2_click(fenetre),bg='lightgrey')
     bouton_m1.pack(side = tk.TOP ,padx = 5)
     bouton_m2.pack(side = tk.TOP, padx = 5)
-
+    
     fenetre.mainloop()
