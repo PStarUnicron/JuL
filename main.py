@@ -105,7 +105,7 @@ def train():
                     bouton.pack(side=tk.TOP, padx=5)
                 num_question += 1
                 selected_value,nb_used = pick_num(nb_used,tot)
-                letsgo = tk.Button(fenetre,text='LETSGO',command=lambda:open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used))
+                letsgo = tk.Button(fenetre,text='LETSGO',command=lambda:open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used),bg='lightgrey')
                 letsgo.pack(pady=10)
             def reload():
                 python = sys.executable
