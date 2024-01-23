@@ -92,8 +92,6 @@ def train():
                 variable_globale.set(base+valeur)
                 afficher_resultat(memory,add)
             def more_question(num_question,nb_used,tot):
-                add = tk.Label(fenetre,text='',bg='grey')
-                add.pack(pady=10)
                 prevention = tk.Label(fenetre,text='Attention, chaque appuie ajoutera le nombre de questions',wraplength=700,bg='grey')
                 prevention.pack(pady=10)
                 valeurs_boutons = [5,10]
@@ -101,6 +99,8 @@ def train():
                 for valeur in valeurs_boutons:
                     bouton = tk.Button(fenetre, text=str(valeur)+' questions', command=lambda v=valeur: assigner_valeur(variable_globale.get(),v,memory,add),bg='lightgrey')
                     bouton.pack(side=tk.TOP, padx=5)
+                add = tk.Label(fenetre,text='',bg='grey')
+                add.pack(pady=10)
                 num_question += 1
                 selected_value,nb_used = pick_num(nb_used,tot)
                 letsgo = tk.Button(fenetre,text='LETSGO',command=lambda:open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used),bg='lightgrey')
