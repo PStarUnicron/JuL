@@ -89,7 +89,7 @@ def train():
     def show_correction(fenetre,correction_value, tot,variables,num_question,nb_pts_tot,nb_used):
         def afficher_score(nb_pts,num_question,nb_used,tot):
             def afficher_resultat(memory,add):
-			nq = variable_globale.get()-memory 
+		nq = variable_globale.get()-memory 
                 add.config(text=f"Il y a actuellement {nq} questions en plus ({variable_globale.get()} au total)")
             def assigner_valeur(base,valeur,memory,add):
                 variable_globale.set(base+valeur)
