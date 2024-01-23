@@ -212,4 +212,3 @@ def train():
     bouton_m2.pack(side = tk.TOP, padx = 5)
 
     fenetre.mainloop()
-train()
