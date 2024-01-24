@@ -5,6 +5,9 @@ import sys
 from cryptography.fernet import Fernet
 import os
 from github import Github
+from PIL import Image,ImageTk
+import requests
+from io import BytesIO
 # -*- coding: utf-8 -*-
 def train():
     def Get_bdd (tt,rr):
@@ -37,6 +40,7 @@ def train():
         return MA
 
     def open_navigation_window(fenetre,selected_value, tot, num_question, nb_pts_tot,nb_used):
+        fenetre.config(bg='grey')
         def clear_window(window):
 
             widgets = window.winfo_children()
@@ -54,9 +58,6 @@ def train():
         def del_butt():
             correction_button.destroy()
         clear_window(fenetre)
-        # navigation_window = tk.Toplevel(fenetre)
-        # navigation_window.title("Révision")
-        # navigation_window.configure(bg='grey')
         variables = [tk.IntVar() for _ in range(4)]
         label1 = tk.Label(fenetre, text=f"{selected_value[0]}",wraplength=800,bg='grey')
         label1.pack(pady=5)
@@ -172,8 +173,27 @@ def train():
     def assigner_valeur(valeur):
         variable_globale.set(valeur)
         afficher_resultat()
+    def import_image_from_github(repository_name, image_path, branch='master', token=None):
+        if token:
+            headers = {'Authorization': f'token {token}'}
+        else:
+            headers = {}
 
+        github_raw_url = f'https://raw.githubusercontent.com/{repository_name}/{branch}/{image_path}'
 
+        try:
+            response = requests.get(github_raw_url, headers=headers)
+            response.raise_for_status()
+
+            # Get the image content as bytes
+            image_content = BytesIO(response.content)
+
+            # Open and display the image using PIL
+            image = Image.open(image_content)
+            return image
+
+        except Exception as e:
+            print(f"Error: {e}")
     ############################################################################################################################################
     td = datetime.now().date()
 
@@ -193,22 +213,40 @@ def train():
     ############################################################################################################################################
     fenetre = tk.Tk()
     fenetre.title("Choix du module")
-    fenetre.configure(bg='grey')
+    repository_name = 'PStarUnicron/JuL'
+    image_path = 'DIETRE.jpeg'
+    branch = 'main'
+
+    image = import_image_from_github(repository_name, image_path, branch)
+
+    img = image
+    img = img.resize((fenetre.winfo_screenwidth(), fenetre.winfo_screenheight()), Image.BICUBIC)
+    background_image = ImageTk.PhotoImage(img)
+
+    canvas = tk.Canvas(fenetre, width=fenetre.winfo_screenwidth(), height=fenetre.winfo_screenheight())
+    canvas.pack(fill="both", expand=True)
+    canvas.create_image(0, 0, anchor="nw", image=background_image)
 
     variable_globale = tk.IntVar()
 
     valeurs_boutons = [5, 15, 20, 35, 46]
+    t =0
     for valeur in valeurs_boutons:
         bouton = tk.Button(fenetre, text=str(valeur)+' questions', command=lambda v=valeur: assigner_valeur(v),bg='lightgrey')
-        bouton.pack(side=tk.TOP, padx=5)
+        bouton.place(relx=0.5,rely=0.1+0.1*t,anchor='center')
+        t+=1
+        # bouton.pack(side=tk.TOP, padx=5)
 
-    resultat_label = tk.Label(fenetre, text="",wraplength=1000,bg='grey')
-    resultat_label.pack(pady=10)
+    resultat_label = tk.Label(fenetre, text="",wraplength=1000,bg='transparent')
+    # resultat_label.pack(pady=10)
+    resultat_label.place(rely=0.55,relx=0.5,anchor='center')
 
 
     bouton_m1 = tk.Button(fenetre, text="M1", command=lambda:on_m1_click(fenetre),bg='lightgrey')
     bouton_m2 = tk.Button(fenetre, text="M2", command=lambda:on_m2_click(fenetre),bg='lightgrey')
-    bouton_m1.pack(side = tk.TOP ,padx = 5)
-    bouton_m2.pack(side = tk.TOP, padx = 5)
+    bouton_m1.place(relx=0.5,rely=0.6,anchor='center')
+    bouton_m2.place(relx=0.5,rely=0.7,anchor='center')
+    # bouton_m1.pack(side = tk.TOP ,padx = 5)
+    # bouton_m2.pack(side = tk.TOP, padx = 5)
 
     fenetre.mainloop()
