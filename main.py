@@ -237,7 +237,7 @@ def train():
         t+=1
         # bouton.pack(side=tk.TOP, padx=5)
 
-    resultat_label = tk.Label(fenetre, text="",wraplength=1000,bg='transparent')
+    resultat_label = tk.Label(fenetre, text="",wraplength=1000)
     # resultat_label.pack(pady=10)
     resultat_label.place(rely=0.55,relx=0.5,anchor='center')
 
