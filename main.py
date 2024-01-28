@@ -147,7 +147,8 @@ def train():
             if nb_pts < 0:
                 nb_pts = 0
         nb_pts = nb_pts/len(nouveaux_chiffres)
-        nb_pts_tot += nb_pts
+        if state[0] == 0:
+            nb_pts_tot += nb_pts
         if nb_pts!= 1 and state[0] == 0:
             uncorr += [nb_used[num_question-1]]
         nb_correctes_label = tk.Label(fenetre,text="",bg='grey')
