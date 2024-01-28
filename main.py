@@ -39,7 +39,7 @@ def train():
         MA = eval(cipher_suite.decrypt(MA).decode())
         return MA
 
-    def open_navigation_window(fenetre,selected_value, tot, num_question, nb_pts_tot,nb_used):
+    def open_navigation_window(fenetre,selected_value, tot, num_question, nb_pts_tot,nb_used,uncorr):
         fenetre.config(bg='grey')
         def clear_window(window):
 
@@ -68,15 +68,15 @@ def train():
         label_line_break2 = tk.Label(fenetre, text="",bg='grey')
         label_line_break2.pack(pady=5)
 
-        # Créer les Checkbuttons et stocker les références dans une liste
         buttons = [tk.Checkbutton(fenetre, text=f"[{i+1}] {selected_value[1][i]}", variable=var,wraplength=800,bg='grey') for i, var in enumerate(variables)]
 
         for button in buttons:
             button.pack()
-        correction_button = tk.Button(fenetre, text="Correction", command=lambda: (update_button_colors(buttons,selected_value[2]),del_butt(),show_correction(fenetre,selected_value[2], tot,variables,num_question,nb_pts_tot,nb_used)),bg='lightgrey')
+        correction_button = tk.Button(fenetre, text="Correction", command=lambda: (update_button_colors(buttons,selected_value[2]),del_butt(),show_correction(fenetre,selected_value[2], tot,variables,num_question,nb_pts_tot,nb_used,uncorr)),bg='lightgrey')
         correction_button.pack(pady=10)
         nq = tk.Label(fenetre, text=f"Question n°{num_question} sur {variable_globale.get()}",bg='grey')
         nq.pack(pady=10)
+
     def pick_num (nb_used,tot):
         random_index = np.random.randint(len(tot))
         while random_index in nb_used:
@@ -84,15 +84,20 @@ def train():
         selected_value = tot[random_index]
         nb_used += [random_index]
         return selected_value,nb_used
-    def destroyer (window):
-        window.destroy()
 
-    def show_correction(fenetre,correction_value, tot,variables,num_question,nb_pts_tot,nb_used):
+    def show_correction(fenetre,correction_value, tot,variables,num_question,nb_pts_tot,nb_used,uncorr):
         def afficher_score(nb_pts,num_question,nb_used,tot):
+            def change_state(evo):
+                if evo == 1:
+                    state[0]=1
+                else:
+                   state[0]=0 
             def assigner_valeur(base,valeur,memory,add):
                 variable_globale.set(base+valeur)
                 afficher_resultat(memory,add)
-            def more_question(num_question,nb_used,tot):
+            def recorr (tot,uncorr):
+                open_navigation_window(fenetre,tot[uncorr[num_uncorr[0]]], tot,num_question,nb_pts_tot,nb_used,uncorr)
+            def more_question(num_question,nb_used,tot,uncorr):
                 prevention = tk.Label(fenetre,text='Attention, chaque appuie ajoutera le nombre de questions',wraplength=700,bg='grey')
                 prevention.pack(pady=10)
                 valeurs_boutons = [5,10]
@@ -104,7 +109,7 @@ def train():
                 add.pack(pady=10)
                 num_question += 1
                 selected_value,nb_used = pick_num(nb_used,tot)
-                letsgo = tk.Button(fenetre,text='LETSGO',command=lambda:open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used),bg='lightgrey')
+                letsgo = tk.Button(fenetre,text='LETSGO',command=lambda:open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used,uncorr),bg='lightgrey')
                 letsgo.pack(pady=10)
             def reload():
                 python = sys.executable
@@ -116,8 +121,11 @@ def train():
             score_final.pack(pady=10)
             reload_butt = tk.Button(fenetre,text='Relancer programme',command=lambda:reload(),bg='purple')
             reload_butt.pack(pady=10)
-            more_qq = tk.Button(fenetre,text='JE VEUX PLUS DE QUESTIOOOOOONS',command=lambda:more_question(num_question,nb_used,tot),bg='red')
+            more_qq = tk.Button(fenetre,text='JE VEUX PLUS DE QUESTIOOOOOONS',command=lambda:more_question(num_question,nb_used,tot,uncorr),bg='red')
             more_qq.pack(pady=10)
+            if uncorr != []:
+                retry = tk.Button(fenetre,text='Refaire les questions auxquelles j ai échoué',command=lambda:(recorr(tot,uncorr),change_state(1)))
+                retry.pack(pady=10)
         resultat_label = tk.Label(fenetre, text="",bg='grey')
         resultat_label.pack()
         boutons_coches = []
@@ -140,32 +148,46 @@ def train():
                 nb_pts = 0
         nb_pts = nb_pts/len(nouveaux_chiffres)
         nb_pts_tot += nb_pts
+        if nb_pts!= 1 and state[0] == 0:
+            uncorr += [nb_used[num_question-1]]
         nb_correctes_label = tk.Label(fenetre,text="",bg='grey')
         nb_correctes_label.pack()  
         if len(boutons_coches)>nb_correctes:
             nb_correctes_label.config(text = f"Soit {nb_correctes} bonnes réponse sur {len(nouveaux_chiffres)} ({round(nb_pts,2)} points car {len(boutons_coches)-nb_correctes} réponse fausse)",bg='grey',wraplength=700)
         else:
             nb_correctes_label.config(text = f"Soit {nb_correctes} bonnes réponse sur {len(nouveaux_chiffres)} ({round(nb_pts,2)} points)",bg='grey',wraplength=700)
-        
-        if num_question >= variable_globale.get():
-            afficher_score(nb_pts_tot,num_question,nb_used,tot)
+        if state[0] == 1:
+            num_uncorr[0] = num_uncorr[0]+1
+            print(f'going into {num_uncorr[0]} question')
+            print(uncorr)
+            if num_uncorr[0] == len(uncorr):
+                num_uncorr[0] = 0
+                uncorr = []
+                state[0] = 0
+                afficher_score(nb_pts_tot,num_question,nb_used,tot)
+            else:
+                go_on_button = tk.Button(fenetre, text="Next question", command=lambda:(open_navigation_window(fenetre,tot[uncorr[num_uncorr[0]]], tot,num_question,nb_pts_tot,nb_used,uncorr)),bg='lightgrey')
+                go_on_button.pack(pady=10)    
         else:
-            score_actuel = tk.Label(fenetre,text=f"Vous avez actuellement {round(nb_pts_tot,2)} sur {num_question}",bg='purple')
-            score_actuel.pack()  
-            num_question += 1
-            selected_value,nb_used = pick_num(nb_used,tot)
-            go_on_button = tk.Button(fenetre, text="Next question", command=lambda:(open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used)),bg='lightgrey')
-            go_on_button.pack(pady=10) 
-            fenetre.wait_window()
+            if num_question >= variable_globale.get():
+                afficher_score(nb_pts_tot,num_question,nb_used,tot)
+            else:
+                score_actuel = tk.Label(fenetre,text=f"Vous avez actuellement {round(nb_pts_tot,2)} sur {num_question}",bg='purple')
+                score_actuel.pack()  
+                num_question += 1
+                selected_value,nb_used = pick_num(nb_used,tot)
+                go_on_button = tk.Button(fenetre, text="Next question", command=lambda:(open_navigation_window(fenetre,selected_value, tot,num_question,nb_pts_tot,nb_used,uncorr)),bg='lightgrey')
+                go_on_button.pack(pady=10) 
+                fenetre.wait_window()
 
     def on_m1_click(fenetre):
         tot = Get_bdd(1,b'UBZuKooAiOrK7uZFvXhwZXAF8l0ZAz8Rk6lhwOg_SDU=')
         selected_value, nb_used = pick_num([],tot)
-        open_navigation_window(fenetre,selected_value, tot,1,0,nb_used)
+        open_navigation_window(fenetre,selected_value, tot,1,0,nb_used,[])
     def on_m2_click(fenetre):
         tot = Get_bdd(2,b'hJQlp7NFy--5DmSW-8KuG6k6coOTmtdic_tNb1_nILc=')
         selected_value, nb_used = pick_num([],tot)
-        open_navigation_window(fenetre,selected_value, tot,1,0,nb_used)
+        open_navigation_window(fenetre,selected_value, tot,1,0,nb_used,[])
     def fermer_programme():
         sys.exit()
     def afficher_resultat():
@@ -248,5 +270,6 @@ def train():
     bouton_m2.place(relx=0.5,rely=0.7,anchor='center')
     # bouton_m1.pack(side = tk.TOP ,padx = 5)
     # bouton_m2.pack(side = tk.TOP, padx = 5)
-
+    state = [0]
+    num_uncorr = [0]
     fenetre.mainloop()
