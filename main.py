@@ -252,7 +252,7 @@ def train():
 
     variable_globale = tk.IntVar()
 
-    valeurs_boutons = [5, 15, 20, 35, 46]
+    valeurs_boutons = [5,10, 15, 20, 46]
     t =0
     for valeur in valeurs_boutons:
         bouton = tk.Button(fenetre, text=str(valeur)+' questions', command=lambda v=valeur: assigner_valeur(v),bg='lightgrey')
