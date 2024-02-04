@@ -237,7 +237,7 @@ def train():
     fenetre = tk.Tk()
     fenetre.title("Choix du module")
     repository_name = 'PStarUnicron/JuL'
-    image_path = 'IMG/DIETRE.jpeg'
+    image_path = 'IMG/welding-181656_640.jpg'
     branch = 'main'
 
     image = import_image_from_github(repository_name, image_path, branch)
