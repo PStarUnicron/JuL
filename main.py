@@ -8,6 +8,7 @@ from github import Github
 from PIL import Image,ImageTk
 import requests
 from io import BytesIO
+import re
 # -*- coding: utf-8 -*-
 def train():
     def Get_bdd (tt,rr):
@@ -41,6 +42,45 @@ def train():
 
     def open_navigation_window(fenetre,selected_value, tot, num_question, nb_pts_tot,nb_used,uncorr):
         fenetre.config(bg='grey')
+        def photo(fenetre,name):
+            def import_image_from_github(repository_name, image_path, branch='master', token=None):
+                if token:
+                    headers = {'Authorization': f'token {token}'}
+                else:
+                    headers = {}
+
+                github_raw_url = f'https://raw.githubusercontent.com/{repository_name}/{branch}/{image_path}'
+
+                try:
+                    response = requests.get(github_raw_url, headers=headers)
+                    response.raise_for_status()
+
+                    # Get the image content as bytes
+                    image_content = BytesIO(response.content)
+
+                    # Open and display the image using PIL
+                    image = Image.open(image_content)
+                    return image
+
+                except Exception as e:
+                    print(f"Error: {e}")
+            frame = tk.Frame(fenetre)
+            frame.pack()
+
+            #status bar
+            bar = tk.Frame(fenetre, relief='ridge', borderwidth=5)
+            bar.pack(side='top')
+            repository_name = 'PStarUnicron/JuL'
+            image_path = f'IMG/{name}'
+            branch = 'main'
+
+            iconPath = import_image_from_github(repository_name, image_path, branch)
+            icon = ImageTk.PhotoImage(iconPath)
+            icon_size = tk.Label(bar)
+            icon_size.image = icon
+            icon_size.configure(image=icon)
+            icon_size.pack(side='left')
+
         def clear_window(window):
 
             widgets = window.winfo_children()
@@ -54,7 +94,29 @@ def train():
                     button.config(bg='green')
                 else:
                     button.config(bg='red')
+        def get_github_directory_files(repo_owner, repo_name, directory_path, token=None):
+            base_url = f'https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{directory_path}'
+            headers = {'Accept': 'application/vnd.github.v3+json'}
 
+            if token:
+                headers['Authorization'] = f'token {token}'
+
+            files = []
+
+            try:
+                response = requests.get(base_url, headers=headers)
+                response.raise_for_status()
+
+                contents = response.json()
+
+                for item in contents:
+                    if 'type' in item and item['type'] == 'file':
+                        files.append(item['name'])
+
+                return files
+            except requests.exceptions.RequestException as e:
+                print(f"Erreur lors de la récupération des fichiers : {e}")
+                return []
         def del_butt():
             correction_button.destroy()
         clear_window(fenetre)
@@ -63,6 +125,17 @@ def train():
         label1.pack(pady=5)
         label_line_break1 = tk.Label(fenetre, text="",bg='grey')
         label_line_break1.pack(pady=5)
+        repository_owner = 'PStarUnicron'
+        repository_name = 'JuL'
+        directory_path = 'IMG'  
+        github_token = ''  
+        files_list = get_github_directory_files(repository_owner, repository_name, directory_path, github_token)
+        match = re.search(r'(\d+)\.', selected_value[0])
+        if match:
+            chiffre_avant_point = int(match.group(1))
+            chiffre_avant_point = str(chiffre_avant_point)+'.JPG'
+            if chiffre_avant_point in files_list:
+                photo(fenetre,chiffre_avant_point)
         label2 = tk.Label(fenetre, text="Réponses :",bg='grey')
         label2.pack(pady=5)
         label_line_break2 = tk.Label(fenetre, text="",bg='grey')
@@ -76,6 +149,7 @@ def train():
         correction_button.pack(pady=10)
         nq = tk.Label(fenetre, text=f"Question n°{num_question} sur {variable_globale.get()}",bg='grey')
         nq.pack(pady=10)
+        
 
     def pick_num (nb_used,tot):
         random_index = np.random.randint(len(tot))
@@ -258,10 +332,10 @@ def train():
         bouton = tk.Button(fenetre, text=str(valeur)+' questions', command=lambda v=valeur: assigner_valeur(v),bg='lightgrey')
         bouton.place(relx=0.5,rely=0.1+0.1*t,anchor='center')
         t+=1
-        # bouton.pack(side=tk.TOP, padx=5)
+
 
     resultat_label = tk.Label(fenetre, text="",wraplength=1000)
-    # resultat_label.pack(pady=10)
+
     resultat_label.place(rely=0.55,relx=0.5,anchor='center')
 
 
@@ -269,8 +343,8 @@ def train():
     bouton_m2 = tk.Button(fenetre, text="M2", command=lambda:on_m2_click(fenetre),bg='lightgrey')
     bouton_m1.place(relx=0.5,rely=0.6,anchor='center')
     bouton_m2.place(relx=0.5,rely=0.7,anchor='center')
-    # bouton_m1.pack(side = tk.TOP ,padx = 5)
-    # bouton_m2.pack(side = tk.TOP, padx = 5)
+    version = tk.Label(fenetre,text='Version mise à jour le 06/02/2024', wraplength=700)
+    version.place(relx=0.5,rely=0.8,anchor='center')
     state = [0]
     num_uncorr = [0]
     fenetre.mainloop()
