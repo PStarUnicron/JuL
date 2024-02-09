@@ -35,6 +35,10 @@ def train():
             repository_name = 'PStarUnicron/JuL'
             file_path = 'M2.txt'
             MA = read_github_file(repository_name,file_path,branch)
+        if tt == 3:
+            repository_name = 'PStarUnicron/JuL'
+            file_path = 'M3.txt'
+            MA = read_github_file(repository_name,file_path,branch)
         MA = MA.encode('utf-8')
         cipher_suite = Fernet(rr)
         MA = eval(cipher_suite.decrypt(MA).decode())
@@ -263,6 +267,10 @@ def train():
         tot = Get_bdd(2,b'hJQlp7NFy--5DmSW-8KuG6k6coOTmtdic_tNb1_nILc=')
         selected_value, nb_used = pick_num([],tot)
         open_navigation_window(fenetre,selected_value, tot,1,0,nb_used,[])
+    def on_m3_click(fenetre):
+        tot = Get_bdd(3,b'UBZuKooAiOrK7uZFvXhwZXAF8l0ZAz8Rk6lhwOg_SDU=')
+        selected_value, nb_used = pick_num([],tot)
+        open_navigation_window(fenetre,selected_value, tot,1,0,nb_used,[])
     def fermer_programme():
         sys.exit()
     def afficher_resultat():
@@ -341,10 +349,12 @@ def train():
 
     bouton_m1 = tk.Button(fenetre, text="M1", command=lambda:on_m1_click(fenetre),bg='lightgrey')
     bouton_m2 = tk.Button(fenetre, text="M2", command=lambda:on_m2_click(fenetre),bg='lightgrey')
+    bouton_m3 = tk.Button(fenetre, text="M3", command=lambda:on_m3_click(fenetre),bg='lightgrey')
     bouton_m1.place(relx=0.5,rely=0.6,anchor='center')
     bouton_m2.place(relx=0.5,rely=0.7,anchor='center')
+    bouton_m3.place(relx=0.5,rely=0.8,anchor='center')
     version = tk.Label(fenetre,text='Version mise à jour le 09/02/2024', wraplength=700)
-    version.place(relx=0.5,rely=0.8,anchor='center')
+    version.place(relx=0.5,rely=0.9,anchor='center')
     state = [0]
     num_uncorr = [0]
     fenetre.mainloop()
