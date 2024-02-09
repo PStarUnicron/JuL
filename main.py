@@ -343,7 +343,7 @@ def train():
     bouton_m2 = tk.Button(fenetre, text="M2", command=lambda:on_m2_click(fenetre),bg='lightgrey')
     bouton_m1.place(relx=0.5,rely=0.6,anchor='center')
     bouton_m2.place(relx=0.5,rely=0.7,anchor='center')
-    version = tk.Label(fenetre,text='Version mise à jour le 06/02/2024', wraplength=700)
+    version = tk.Label(fenetre,text='Version mise à jour le 09/02/2024', wraplength=700)
     version.place(relx=0.5,rely=0.8,anchor='center')
     state = [0]
     num_uncorr = [0]
