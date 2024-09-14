@@ -199,7 +199,8 @@ def train():
             def afficher_resultat(memory,add): 
                 nq = variable_globale.get()-memory
                 add.config(text=f"Il y a actuellement {nq} questions en plus ({variable_globale.get()} au total)")
-            score_final = tk.Label(fenetre,text=f"Vous avez obenu un score de {round(nb_pts,2)} sur {variable_globale.get()}",bg='purple')
+            twenty_mark = round((round(nb_pts_tot,2)*20)/num_question,2)
+            score_final = tk.Label(fenetre,text=f"Vous avez obenu un score de {round(nb_pts,2)} sur {variable_globale.get()} ({twenty_mark}/20)",bg='purple')
             score_final.pack(pady=10)
             reload_butt = tk.Button(fenetre,text='Relancer programme',command=lambda:reload(),bg='purple')
             reload_butt.pack(pady=10)
@@ -363,7 +364,7 @@ def train():
     bouton_m2.place(relx=0.5,rely=0.7,anchor='center')
     bouton_m3.place(relx=0.5,rely=0.8,anchor='center')
     bouton_m4.place(relx=0.5,rely=0.9,anchor='center')
-    version = tk.Label(fenetre,text='Version mise à jour le 12/09/2024', wraplength=700)
+    version = tk.Label(fenetre,text='Version mise à jour le 14/09/2024', wraplength=700)
     version.place(relx=0.5,rely=0.95,anchor='center')
     state = [0]
     num_uncorr = [0]
