@@ -160,6 +160,8 @@ def train():
         
 
     def pick_num (nb_used,tot):
+        current_time = int(time.time())
+        np.random.seed(current_time)
         random_index = np.random.randint(len(tot))
         while random_index in nb_used:
             random_index = np.random.randint(len(tot))
@@ -364,7 +366,7 @@ def train():
     bouton_m2.place(relx=0.5,rely=0.7,anchor='center')
     bouton_m3.place(relx=0.5,rely=0.8,anchor='center')
     bouton_m4.place(relx=0.5,rely=0.9,anchor='center')
-    version = tk.Label(fenetre,text='Version mise à jour le 14/09/2024', wraplength=700)
+    version = tk.Label(fenetre,text='Version mise à jour le 18/09/2024', wraplength=700)
     version.place(relx=0.5,rely=0.95,anchor='center')
     state = [0]
     num_uncorr = [0]
