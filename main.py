@@ -9,6 +9,7 @@ from PIL import Image,ImageTk
 import requests
 from io import BytesIO
 import re
+import time
 # -*- coding: utf-8 -*-
 def train():
     def Get_bdd (tt,rr):
