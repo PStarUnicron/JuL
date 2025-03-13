@@ -356,7 +356,8 @@ def train():
     resultat_label = tk.Label(fenetre, text="",wraplength=1000)
 
     resultat_label.place(rely=0.55,relx=0.5,anchor='center')
-
+    pay_message = tk.Label(fenetre, text="PAYEZ MOI SUR PAYPAL / CEUX QUI ONT MODIFIE L'APP AUSSI",wraplength=1000)
+    pay_message.place(rely=0.95,relx=0.5,anchor='center')
     bouton_m1 = tk.Button(fenetre, text="M1", command=lambda:on_m1_click(fenetre),bg='lightgrey')
     bouton_m2 = tk.Button(fenetre, text="M2", command=lambda:on_m2_click(fenetre),bg='lightgrey')
     bouton_m3 = tk.Button(fenetre, text="M3", command=lambda:on_m3_click(fenetre),bg='lightgrey')
