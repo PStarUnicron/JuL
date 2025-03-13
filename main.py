@@ -314,8 +314,7 @@ def train():
     ############################################################################################################################################
     td = datetime.now().date()
 
-    dd = datetime(2025, 3,3).date()
-
+    dd = datetime(2025, 5,5).date()
     if td > dd:
         fenetre = tk.Tk()
         fenetre.title("Message d'expiration")
@@ -357,7 +356,6 @@ def train():
     resultat_label = tk.Label(fenetre, text="",wraplength=1000)
 
     resultat_label.place(rely=0.55,relx=0.5,anchor='center')
-
 
     bouton_m1 = tk.Button(fenetre, text="M1", command=lambda:on_m1_click(fenetre),bg='lightgrey')
     bouton_m2 = tk.Button(fenetre, text="M2", command=lambda:on_m2_click(fenetre),bg='lightgrey')
